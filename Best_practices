@@ -52,5 +52,12 @@
       case object Nok extends Status
     }
     
+ 7. case classes
+    Don't
+    case class Foo(i: Int) // bad because descendants might not behave as you'd expect
+    Do:
+    final  case class Foo(i: Int)
+    
+ 8. Custom Extractors
     
     
