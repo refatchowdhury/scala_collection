@@ -1,0 +1,56 @@
+1. Array Comparison
+    Don't :
+    Array(1) == Array(1) // it doesn't work
+    Do:
+    Array(1).sameElements(Array(1))
+    
+2.Type Annotation
+    Don't:
+    def asOption[T](a:T) = Some(a) //the return type is not what you'd expect
+    Do:
+    def asOption[T](a:T): Option[T] = Some(a)
+
+3.Enumerations
+    Don't:
+    Object Status extends Enumeration {
+      val ok, noOk = Value
+    }
+    //bad because it compiles with a non exhaustivity warning and fails at runtime
+    def foo(w: Status.value) = w match {
+      case Status.ok => println("ok")
+    }
+
+    Do:
+    Use ADT
+    sealed trait Status
+    object Status {
+      case object Ok extends Status
+      case object Nok extends Status
+    }
+    
+4.Public methods should be explicitly typed, otherwise the compiler's inferred type can often surprise you.
+    def receive(rpc: WebSocketRPC): Option[Response] = {...}
+    
+5. sealed trait descendents need to be final otherwise seal might leak.
+    sealed trait Staus
+    final class Foo extends Status
+6. ADT 
+    Don't:
+    //bad because noisy type inference
+    sealed trait Status
+    object Status {
+      case object Ok extends Status
+      case object Nok extends Status
+    }
+    
+    List(Status.Ok, Status.Nok)  // res: List[Product with Serializable with Status] = List(Ok, Nok)
+    
+    Do:
+    sealed trait Status extends Product with Serializable
+    object Status {
+      case object Ok extends Status
+      case object Nok extends Status
+    }
+    
+    
+    
